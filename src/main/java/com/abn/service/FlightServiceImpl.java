@@ -25,14 +25,6 @@ public class FlightServiceImpl implements FlightService {
 	@Autowired
 	private FlightRepository flightRepository;
 			
-
-	@Override
-	public List<Flight> getAllFlights() {
-		List<Flight> listOfFlights = new ArrayList<>();
-		listOfFlights = flightRepository.findAll();
-		return listOfFlights;
-	}
-
 	@Override
 	public List<FlightSearchResponseDto> getFilteredFlights(String destination, String source, String departureDate) {
 		logger.debug("** getFilteredFlights() - Execution started. **");
@@ -61,14 +53,14 @@ public class FlightServiceImpl implements FlightService {
 		if(Objects.nonNull(listOfFilteredFlights)) {
 			resultSet=	listOfFilteredFlights.stream()
 					.filter((Flight flight) -> Objects.nonNull(flight))
-					.map(flight->mapFlight(flight)).collect(Collectors.toList());
+					.map(flight->mapFlightData(flight)).collect(Collectors.toList());
 		}
 
 		logger.debug("** getFilteredFlights() - Execution completed. **");
 		return resultSet;
 	}
 
-	private FlightSearchResponseDto mapFlight(Flight flight) {
+	private FlightSearchResponseDto mapFlightData(Flight flight) {
 		FlightSearchResponseDto responseDto= new FlightSearchResponseDto();
 		
 		responseDto.setFlightNumber(flight.getFlightName());
@@ -78,17 +70,6 @@ public class FlightServiceImpl implements FlightService {
 		responseDto.setArrivalTime(flight.getArrivalTime());
 		responseDto.setFare(flight.getFare().toString());
 		return responseDto;
-	}
-
-	@Override
-	public Flight getFlight(Integer flightId) {
-		logger.debug("** getFlight() - Execution started. **");
-		Optional<Flight> optionalFlight = flightRepository.findById(flightId);
-		if (optionalFlight.isPresent()) {
-			return optionalFlight.get();
-		}
-		logger.debug("** getFlight() - Execution completed. **");
-		return null;
 	}
 
 }

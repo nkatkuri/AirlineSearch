@@ -45,18 +45,16 @@ public class SearchController {
 			String departureDate = searchRequest.getDepartureDate();
 			
 			filteredFlights = flightService.getFilteredFlights(destination, origin, departureDate);
+			return new ResponseEntity<>(filteredFlights, HttpStatus.OK);
 			}else {
 				return new ResponseEntity<>("Invalid input data",HttpStatus.BAD_REQUEST);
 			}
 		}
 		catch(Exception ex) {
-			logger.info("** getFilteredFlights() - Exception occured **");
+			 logger.info("** getFilteredFlights() - Exception occured **");
+			 return new ResponseEntity<>("Invalid input data", HttpStatus.BAD_REQUEST);
 		}
 		
-		
-
-		logger.debug("** getFilteredFlights() - Execution completed. **");
-		return new ResponseEntity<>(filteredFlights, HttpStatus.OK);
 
 	}
 

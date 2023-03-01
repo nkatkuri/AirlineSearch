@@ -2,7 +2,7 @@ package com.abn.dto;
 
 import org.springframework.lang.NonNull;
 
-public class FlightSearchRequestDto {
+public class FlightSearchRequestDTO {
 	@NonNull
 	private String origin;
 	@NonNull

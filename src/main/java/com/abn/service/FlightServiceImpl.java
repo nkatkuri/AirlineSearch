@@ -3,16 +3,22 @@ package com.abn.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import com.abn.dto.FlightSearchResponseDto;
+import com.abn.dto.FlightSearchResponseDTO;
 import com.abn.entity.Flight;
 import com.abn.exception.InvalidDateFormatException;
 import com.abn.repository.FlightRepository;
@@ -20,48 +26,55 @@ import com.abn.repository.FlightRepository;
 @Service
 public class FlightServiceImpl implements FlightService {
 
-	public static Logger logger = LoggerFactory.getLogger(FlightServiceImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(FlightServiceImpl.class);
 
 	@Autowired
 	private FlightRepository flightRepository;
 			
+	
+
+	
+
 	@Override
-	public List<FlightSearchResponseDto> getFilteredFlights(String destination, String source, String departureDate) {
-		logger.debug("** getFilteredFlights() - Execution started. **");
-		LocalDate ldate = null;
+	public List<FlightSearchResponseDTO> getFilteredFlights(String destination, @Valid String origin,
+			LocalDate departureDate,String price) {
+		// TODO Auto-generated method stub
+		
 		List<Flight> listOfFilteredFlights = null;
-		List<FlightSearchResponseDto> resultSet = new ArrayList<>();
-		try {
-			ldate = LocalDate.parse(departureDate);
-			logger.info("** getFilteredFlights() - Date successfully parsed. **");
-		} catch (DateTimeParseException dtpe) {
-			logger.info("** getFilteredFlights() - Date was not parsed successfully -> " + dtpe.getMessage() + " **");
-			throw new InvalidDateFormatException("Entered date is invalid, please enter in YYYY-MM-DD format.");
-		}
-		catch (Exception ex) {
-			logger.info("** getFilteredFlights() - Date was not parsed successfully -> " + ex.getMessage() + " **");
-		}
-		try {
-			listOfFilteredFlights = flightRepository
-					.findByDestinationIgnoreCaseAndOriginIgnoreCaseAndDepartureDate(destination, source, ldate);
-			logger.info("** getFilteredFlights() - Retrieved listOfFilteredFlights. **");
-		} catch (Exception e) {
-			logger.info("** getFilteredFlights() - An exception occured while retrieving the list from db -> "
-					+ e.getMessage() + " **");
+		List<FlightSearchResponseDTO> resultSet = new ArrayList<>();
+				
+		listOfFilteredFlights = flightRepository.findByDestinationIgnoreCaseAndOriginIgnoreCase(destination, origin);
+		
+		/**
+		 * sort the flights by price
+		 */
+		        if(Objects.nonNull(price))
+		        {
+	    		listOfFilteredFlights.sort((h1, h2) -> h1.getFare().compareTo(Double.valueOf(price)));
+		        }
+		
+		/**
+		 * sort the flights by duration
+		 */
+				if(Objects.nonNull(departureDate)) {
+	    		listOfFilteredFlights.sort((h1, h2) -> h1.getDepartureDate().compareTo(departureDate));
+	    
+				}
+	    		
+	    		if(Objects.nonNull(listOfFilteredFlights)) {
+	    			resultSet=	listOfFilteredFlights.stream()
+	    					.filter((Flight flight) -> Objects.nonNull(flight))
+	    					.map(flight->mapFlightData(flight)).collect(Collectors.toList());
+	    		}
 
-		}
-		if(Objects.nonNull(listOfFilteredFlights)) {
-			resultSet=	listOfFilteredFlights.stream()
-					.filter((Flight flight) -> Objects.nonNull(flight))
-					.map(flight->mapFlightData(flight)).collect(Collectors.toList());
-		}
-
-		logger.debug("** getFilteredFlights() - Execution completed. **");
-		return resultSet;
+	    		logger.debug("** getFilteredFlights() - Execution completed. **");
+	    		return resultSet;
+						
 	}
-
-	private FlightSearchResponseDto mapFlightData(Flight flight) {
-		FlightSearchResponseDto responseDto= new FlightSearchResponseDto();
+	
+	
+	private FlightSearchResponseDTO mapFlightData(Flight flight) {
+		FlightSearchResponseDTO responseDto= new FlightSearchResponseDTO();
 		
 		responseDto.setFlightNumber(flight.getFlightName());
 		responseDto.setOrigin(flight.getOrigin());

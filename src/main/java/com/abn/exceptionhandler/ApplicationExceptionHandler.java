@@ -18,7 +18,7 @@ import com.abn.exception.NoDataFoundException;
 @ControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	public static Logger logger = LoggerFactory.getLogger(ApplicationExceptionHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(ApplicationExceptionHandler.class);
 	
 	@ExceptionHandler(value = NoDataFoundException.class)
 	public ResponseEntity<?> handleNoDataFoundException(NoDataFoundException ndfe){

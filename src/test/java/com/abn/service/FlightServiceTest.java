@@ -29,6 +29,11 @@ import com.abn.exceptionhandler.FlightSearchException;
 import com.abn.repository.FlightRepository;
 import com.abn.restcontroller.SearchController;
 
+/**
+ * 
+ * @author nkatkuri
+ *  This is service test
+ */
 @RunWith(SpringRunner.class)
 @DataJpaTest
 class FlightServiceTest {
@@ -46,6 +51,10 @@ class FlightServiceTest {
 	
 	}
 
+	/**
+	 * This test validated the service response
+	 * @throws FlightSearchException
+	 */
 	@Test
 	void FlightserviceResponseTest() throws FlightSearchException {
 
@@ -70,8 +79,7 @@ class FlightServiceTest {
 	}
 
 	private FlightSearchResponseDTO buildresponse() {
-		// TODO Auto-generated method stub
-
+	
 		FlightSearchResponseDTO response = new FlightSearchResponseDTO();
 		response.setOrigin("AMS");
 		response.setDestination("DEL");

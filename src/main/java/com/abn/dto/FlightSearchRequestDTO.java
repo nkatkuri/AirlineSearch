@@ -1,7 +1,11 @@
 package com.abn.dto;
 
 import org.springframework.lang.NonNull;
-
+/**
+ * 
+ * @author nkatkuri
+ *
+ */
 public class FlightSearchRequestDTO {
 	@NonNull
 	private String origin;

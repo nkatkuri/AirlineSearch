@@ -7,6 +7,11 @@ import com.abn.dto.FlightSearchResponseDTO;
 import com.abn.entity.Flight;
 import com.abn.entity.SearchEntity;
 import com.abn.exceptionhandler.FlightSearchException;
+/**
+ * 
+ * @author nkatkuri
+ *
+ */
 
 public interface FlightService {
 

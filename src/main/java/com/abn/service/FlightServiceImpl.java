@@ -25,6 +25,11 @@ import com.abn.exception.NoDataFoundException;
 import com.abn.exceptionhandler.FlightSearchException;
 import com.abn.repository.FlightRepository;
 
+/**
+ * 
+ * @author nkatkuri
+ * This class defined for all the business logic
+ */
 @Service
 public class FlightServiceImpl implements FlightService {
 
@@ -32,11 +37,19 @@ public class FlightServiceImpl implements FlightService {
 
 	@Autowired
 	private FlightRepository flightRepository;
-
+	
+	
+    /**
+     * This method is used retrieve the flights form back end 
+     * and sorting based on request parameter
+     *  
+     */
+	
 	@Override
 	public List<FlightSearchResponseDTO> getFilteredFlights(@Valid String destination, @Valid String origin,
 			LocalDate departureDate, String sortColumn, String sortType) throws FlightSearchException {
 		 
+		logger.debug("** getFilteredFlights() - Execution Started. **");
 
 		List<FlightSearchResponseDTO> resultSet = new ArrayList<>();
 		
@@ -80,6 +93,8 @@ public class FlightServiceImpl implements FlightService {
 		return resultSet;
 
 	}
+	
+	//This method is sorting the result based on type
 
 	private void sortByType(String sortType, List<Flight> listOfFilteredFlights) {
 		if (Objects.nonNull(sortType) && sortType.equals("desc")) {
@@ -87,7 +102,10 @@ public class FlightServiceImpl implements FlightService {
 		}
 	}
 
+	//This method is used to map response dto
 	private FlightSearchResponseDTO mapFlightData(Flight flight) {
+		
+		logger.debug("** mapFlightData- Execution started. **");
 		FlightSearchResponseDTO responseDto = new FlightSearchResponseDTO();
 
 		responseDto.setFlightNumber(flight.getFlightName());
@@ -96,7 +114,10 @@ public class FlightServiceImpl implements FlightService {
 		responseDto.setDestinationTime(flight.getDepartureTime());
 		responseDto.setArrivalTime(flight.getArrivalTime());
 		responseDto.setFare(flight.getFare().toString());
+		logger.debug("** mapFlightData- Execution completed. **");
 		return responseDto;
+		
+		
 	}
 
 }

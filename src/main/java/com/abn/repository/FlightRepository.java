@@ -8,6 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.abn.entity.Flight;
 
+/**
+ * 
+ * @author nkatkuri
+ *
+ */
 public interface FlightRepository extends JpaRepository<Flight, Integer>{
 
 	

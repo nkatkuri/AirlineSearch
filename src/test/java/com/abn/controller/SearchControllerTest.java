@@ -1,37 +1,33 @@
 package com.abn.controller;
 
-import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.AssertTrue;
-
-import org.hibernate.mapping.Array;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.abn.dto.FlightSearchResponseDTO;
 import com.abn.restcontroller.SearchController;
 import com.abn.service.FlightService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * 
+ * @author nkatkuri
+ * This is controller test 
+ */
 @RunWith(SpringRunner.class)
 @WebMvcTest(SearchController.class)
 class SearchControllerTest {
@@ -42,6 +38,11 @@ class SearchControllerTest {
 	@MockBean
 	private FlightService flightService;
 
+	/**
+	 * This is for successful data retrieval validation
+	 * @throws Exception 
+	 */
+	
 	@Test
 	void GetFlightsTestForSuccessfulRetrieval() throws Exception {
 
@@ -57,6 +58,11 @@ class SearchControllerTest {
 
 		assertEquals(200, result.getResponse().getStatus());
 	}
+	
+	/**
+	 * This is for bad request data validation
+	 * @throws Exception
+	 */
 
 	@Test
 	void GetFlightsTestForBadRequest() throws Exception {
@@ -71,6 +77,11 @@ class SearchControllerTest {
 
 		assertEquals(400, result.getResponse().getStatus());
 	}
+	
+	/**
+	 * This is for no data found validation
+	 * @throws Exception
+	 */
 
 	@Test
 	void GetFlightsTestForNotFound() throws Exception {

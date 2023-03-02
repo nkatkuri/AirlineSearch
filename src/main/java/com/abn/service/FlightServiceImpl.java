@@ -1,26 +1,22 @@
 package com.abn.service;
 
+import java.time.Duration;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+
 import com.abn.dto.FlightSearchResponseDTO;
 import com.abn.entity.Flight;
-import com.abn.exception.InvalidDateFormatException;
 import com.abn.exception.NoDataFoundException;
 import com.abn.exceptionhandler.FlightSearchException;
 import com.abn.repository.FlightRepository;
@@ -62,12 +58,13 @@ public class FlightServiceImpl implements FlightService {
 		if (Objects.nonNull(sortColumn)) {
 			if (sortColumn.equals("price")) {// sort the flights by price and ascending order
 				listOfFilteredFlights.sort((h1, h2) -> h1.getFare().compareTo(Double.valueOf(sortColumn)));
-				sortByType(sortType, listOfFilteredFlights);
+				
+				sortByType(sortType, listOfFilteredFlights);//sort by desc
 
-			} else {// sort by departure date with descending type
-				listOfFilteredFlights.sort((h1, h2) -> h1.getDepartureDate().compareTo(departureDate));
+			} else {// sort by duration with descending type
+				listOfFilteredFlights.stream().map((Flight f)->getDuration(f)).collect(Collectors.toList());
 
-				sortByType(sortType, listOfFilteredFlights);
+				sortByType(sortType, listOfFilteredFlights); //sort by desc 
 
 			}
 		}
@@ -82,7 +79,7 @@ public class FlightServiceImpl implements FlightService {
 		}
 
 		/**
-		 * Exception handled
+		 * Exception handled for No data
 		 */
 		if (Objects.nonNull(resultSet) && resultSet.isEmpty()) {
 			throw new NoDataFoundException(
@@ -94,8 +91,14 @@ public class FlightServiceImpl implements FlightService {
 
 	}
 	
-	//This method is sorting the result based on type
+	private Object getDuration(Flight f) {
+		// TODO Auto-generated method stub
+		
+		long duration = Duration.between(f.getArrivalTime(), f.getDepartureTime()).toHours();
+		return duration;
+	}
 
+	//This method is sorting the result based on type
 	private void sortByType(String sortType, List<Flight> listOfFilteredFlights) {
 		if (Objects.nonNull(sortType) && sortType.equals("desc")) {
 			Collections.reverse(listOfFilteredFlights);

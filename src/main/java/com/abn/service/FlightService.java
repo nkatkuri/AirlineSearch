@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.abn.dto.FlightSearchResponseDTO;
-import com.abn.entity.Flight;
-import com.abn.entity.SearchEntity;
 import com.abn.exceptionhandler.FlightSearchException;
 /**
  * 

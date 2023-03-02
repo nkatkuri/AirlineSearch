@@ -1,0 +1,112 @@
+Scenario 1: With Origin,Destination and DepartureDate
+
+Request URI: http://localhost:8090/flights/?origin=AMS&destination=MAA&departureDate=2023-01-24
+method:GET
+
+[
+    {
+        "flightNumber": "D101",
+        "origin": "AMS",
+        "destination": "MAA",
+        "arrivalTime": "15:00:00",
+        "destinationTime": "09:00:00",
+        "fare": "600.0"
+    }
+]
+
+Scenario 2: With Origin,Destination and DepartureDate,sortColumn=departure Date,sort Type =Desc
+
+Request URI:http://localhost:8090/flights/?origin=AMS&destination=MAA&departureDate=2023-01-24&sortColumn=departureDate&sortType=Desc
+method:GET
+
+Response:
+
+[
+    {
+        "flightNumber": "D101",
+        "origin": "AMS",
+        "destination": "MAA",
+        "arrivalTime": "15:00:00",
+        "destinationTime": "09:00:00",
+        "fare": "600.0"
+    }
+]
+
+
+Scenario 3: With Origin,Destination and DepartureDate,sortColumn=departure Date,sort Type =Asc
+
+Request URI:http://localhost:8090/flights/?origin=AMS&destination=MAA&departureDate=2023-01-24&sortColumn=departureDate&sortType=Asc
+method:GET
+
+Response:
+
+[
+    {
+        "flightNumber": "D101",
+        "origin": "AMS",
+        "destination": "MAA",
+        "arrivalTime": "15:00:00",
+        "destinationTime": "09:00:00",
+        "fare": "600.0"
+    }
+]
+
+
+
+
+Scenario 4: With Origin,Destination and DepartureDate,sortColumn=price,sort Type =Asc
+
+Request:
+
+http://localhost:8090/flights/?origin=AMS&destination=MAA&departureDate=2023-01-24&sortColumn=price&sortType=Asc
+
+
+
+Response:
+
+[
+    {
+        "flightNumber": "D101",
+        "origin": "AMS",
+        "destination": "MAA",
+        "arrivalTime": "15:00:00",
+        "destinationTime": "09:00:00",
+        "fare": "600.0"
+    }
+]
+
+Scenario 5:  With Origin,Destination and DepartureDate,sortColumn=price,sort Type =Desc
+
+Request:
+http://localhost:8090/flights/?origin=AMS&destination=MAA&departureDate=2023-01-24&sortColumn=price&sortType=Desc
+
+
+
+Response:
+
+[
+    {
+        "flightNumber": "D101",
+        "origin": "AMS",
+        "destination": "MAA",
+        "arrivalTime": "15:00:00",
+        "destinationTime": "09:00:00",
+        "fare": "600.0"
+    }
+]
+
+
+
+Scenario 6:  No data
+Request URI
+
+http://localhost:8090/flights/?origin=HYD&destination=MAA&departureDate=2023-01-24&sortColumn=price&sortType=Desc
+
+Response:
+
+{
+    "error": "Failed there is no data",
+    "timestamp": "2023-03-02T15:07:13.4377008",
+    "details": "No Data Found for given origin=HYD and destination=MAA",
+    "statuscode": "404"
+}

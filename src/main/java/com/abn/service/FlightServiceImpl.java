@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import com.abn.dto.FlightSearchResponseDTO;
 import com.abn.entity.Flight;
 import com.abn.exception.InvalidDateFormatException;
+import com.abn.exception.NoDataFoundException;
+import com.abn.exceptionhandler.FlightSearchException;
 import com.abn.repository.FlightRepository;
 
 @Service
@@ -30,52 +32,64 @@ public class FlightServiceImpl implements FlightService {
 
 	@Autowired
 	private FlightRepository flightRepository;
-			
-	
-
-	
 
 	@Override
-	public List<FlightSearchResponseDTO> getFilteredFlights(String destination, @Valid String origin,
-			LocalDate departureDate,String price) {
-		// TODO Auto-generated method stub
-		
-		List<Flight> listOfFilteredFlights = null;
-		List<FlightSearchResponseDTO> resultSet = new ArrayList<>();
-				
-		listOfFilteredFlights = flightRepository.findByDestinationIgnoreCaseAndOriginIgnoreCase(destination, origin);
-		
-		/**
-		 * sort the flights by price
-		 */
-		        if(Objects.nonNull(price))
-		        {
-	    		listOfFilteredFlights.sort((h1, h2) -> h1.getFare().compareTo(Double.valueOf(price)));
-		        }
-		
-		/**
-		 * sort the flights by duration
-		 */
-				if(Objects.nonNull(departureDate)) {
-	    		listOfFilteredFlights.sort((h1, h2) -> h1.getDepartureDate().compareTo(departureDate));
-	    
-				}
-	    		
-	    		if(Objects.nonNull(listOfFilteredFlights)) {
-	    			resultSet=	listOfFilteredFlights.stream()
-	    					.filter((Flight flight) -> Objects.nonNull(flight))
-	    					.map(flight->mapFlightData(flight)).collect(Collectors.toList());
-	    		}
+	public List<FlightSearchResponseDTO> getFilteredFlights(@Valid String destination, @Valid String origin,
+			LocalDate departureDate, String sortColumn, String sortType) throws FlightSearchException {
+		 
 
-	    		logger.debug("** getFilteredFlights() - Execution completed. **");
-	    		return resultSet;
-						
-	}
-	
-	
-	private FlightSearchResponseDTO mapFlightData(Flight flight) {
-		FlightSearchResponseDTO responseDto= new FlightSearchResponseDTO();
+		List<FlightSearchResponseDTO> resultSet = new ArrayList<>();
 		
+		List<Flight> listOfFilteredFlights = flightRepository
+				.findByDestinationIgnoreCaseAndOriginIgnoreCaseAndDepartureDate(destination, origin,departureDate);
+		
+		/**
+		 * sort by price or duration
+		 */
+		if (Objects.nonNull(sortColumn)) {
+			if (sortColumn.equals("price")) {// sort the flights by price and ascending order
+				listOfFilteredFlights.sort((h1, h2) -> h1.getFare().compareTo(Double.valueOf(sortColumn)));
+				sortByType(sortType, listOfFilteredFlights);
+
+			} else {// sort by departure date with descending type
+				listOfFilteredFlights.sort((h1, h2) -> h1.getDepartureDate().compareTo(departureDate));
+
+				sortByType(sortType, listOfFilteredFlights);
+
+			}
+		}
+
+		/**
+		 * Map the values with response dto
+		 */
+
+		if (Objects.nonNull(listOfFilteredFlights)) {
+			resultSet = listOfFilteredFlights.stream().filter((Flight flight) -> Objects.nonNull(flight))
+					.map(flight -> mapFlightData(flight)).collect(Collectors.toList());
+		}
+
+		/**
+		 * Exception handled
+		 */
+		if (Objects.nonNull(resultSet) && resultSet.isEmpty()) {
+			throw new NoDataFoundException(
+					"No Data Found for given origin=" + origin + " and destination=" + destination);
+		}
+
+		logger.debug("** getFilteredFlights() - Execution completed. **");
+		return resultSet;
+
+	}
+
+	private void sortByType(String sortType, List<Flight> listOfFilteredFlights) {
+		if (Objects.nonNull(sortType) && sortType.equals("desc")) {
+			Collections.reverse(listOfFilteredFlights);
+		}
+	}
+
+	private FlightSearchResponseDTO mapFlightData(Flight flight) {
+		FlightSearchResponseDTO responseDto = new FlightSearchResponseDTO();
+
 		responseDto.setFlightNumber(flight.getFlightName());
 		responseDto.setOrigin(flight.getOrigin());
 		responseDto.setDestination(flight.getDestination());

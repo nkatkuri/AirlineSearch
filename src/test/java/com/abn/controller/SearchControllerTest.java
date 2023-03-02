@@ -32,46 +32,59 @@ import com.abn.restcontroller.SearchController;
 import com.abn.service.FlightService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(SearchController.class)
 class SearchControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-           
-    @MockBean
-    private FlightService flightService;
+	@Autowired
+	private MockMvc mockMvc;
 
-    
+	@MockBean
+	private FlightService flightService;
+
 	@Test
-	void GetFLightsTest_200() throws Exception {
-		
-		List<FlightSearchResponseDTO> flightData=new ArrayList<FlightSearchResponseDTO>();
-		
-		Mockito.when(flightService.getFilteredFlights("","",LocalDate.now(),"")).thenReturn(flightData);
-		
-		
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/flights/?origin=AMS&destination=DEL&departureDate=2023-01-24&price=850").accept(MediaType.APPLICATION_JSON);
-		
-		MvcResult result = mockMvc.perform(requestBuilder).andReturn();		
-		
+	void GetFlightsTestForSuccessfulRetrieval() throws Exception {
+
+		List<FlightSearchResponseDTO> flightData = new ArrayList<FlightSearchResponseDTO>();
+
+		Mockito.when(flightService.getFilteredFlights("", "", LocalDate.now(), "", "")).thenReturn(flightData);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
+				"/flights/?origin=AMS&destination=DEL&departureDate=2023-01-24&sortColumn=departureDate&sortType=Desc")
+				.accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
 		assertEquals(200, result.getResponse().getStatus());
 	}
-	
+
 	@Test
-	void GetFLightsTest_400() throws Exception {
-		
-		List<FlightSearchResponseDTO> flightData=new ArrayList<FlightSearchResponseDTO>();
-		
-		Mockito.when(flightService.getFilteredFlights("","",LocalDate.now(),"")).thenReturn(flightData);
-		
-		
+	void GetFlightsTestForBadRequest() throws Exception {
+
+		List<FlightSearchResponseDTO> flightData = new ArrayList<FlightSearchResponseDTO>();
+
+		Mockito.when(flightService.getFilteredFlights("", "", LocalDate.now(), "", null)).thenReturn(flightData);
+
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/flights/").accept(MediaType.APPLICATION_JSON);
-		
-		MvcResult result = mockMvc.perform(requestBuilder).andReturn();		
-		
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
 		assertEquals(400, result.getResponse().getStatus());
 	}
 
+	@Test
+	void GetFlightsTestForNotFound() throws Exception {
+
+		List<FlightSearchResponseDTO> flightData = new ArrayList<FlightSearchResponseDTO>();
+
+		Mockito.when(flightService.getFilteredFlights("", "", LocalDate.now(), "", null)).thenReturn(flightData);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/flights").accept(MediaType.APPLICATION_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+		assertEquals(404, result.getResponse().getStatus());
+	}
+
+	
 }

@@ -27,17 +27,29 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		errorbody.put("error", "Failed there is no data");
 		errorbody.put("timestamp", LocalDateTime.now());
 		errorbody.put("details", ndfe.getMessage());
+		errorbody.put("statuscode", "404");
 		
 		return new ResponseEntity<>(errorbody, HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(value = InvalidDateFormatException.class)
 	public ResponseEntity<?> handleInvalidDateFormatException(InvalidDateFormatException idfe){
-		logger.debug("** handleInvalidDateFormatException() - Execution started **");
+		logger.error("** handleInvalidDateFormatException() - Execution started **");
 		Map<String, Object> errorbody = new LinkedHashMap<>();
 		errorbody.put("error", "Invalid date format");
 		errorbody.put("timestamp", LocalDateTime.now());
 		errorbody.put("details", idfe.getMessage());
+		
+		return new ResponseEntity<>(errorbody, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(value = NullPointerException.class)
+	public ResponseEntity<?> handleNullPointerException(NullPointerException npe){
+		logger.error("** handleNullPointerException() - Execution started **");
+		Map<String, Object> errorbody = new LinkedHashMap<>();
+		errorbody.put("error", "null exception occured");
+		errorbody.put("timestamp", LocalDateTime.now());
+		errorbody.put("details", npe.getMessage());
 		
 		return new ResponseEntity<>(errorbody, HttpStatus.NOT_FOUND);
 	}

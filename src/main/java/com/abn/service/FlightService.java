@@ -6,9 +6,11 @@ import java.util.List;
 import com.abn.dto.FlightSearchResponseDTO;
 import com.abn.entity.Flight;
 import com.abn.entity.SearchEntity;
+import com.abn.exceptionhandler.FlightSearchException;
 
 public interface FlightService {
-			
-	public List<FlightSearchResponseDTO> getFilteredFlights(String destination, String origin, LocalDate departureDate,String price);
-		
+
+	public List<FlightSearchResponseDTO> getFilteredFlights(String destination, String origin, LocalDate departureDate,
+			String sortColumn, String sortType) throws FlightSearchException;
+
 }

@@ -10,11 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
-/**
- * 
- * @author nkatkuri
- * Table for flight details
- */
+
 @Entity
 @Table(name = "flight")
 public class Flight {
